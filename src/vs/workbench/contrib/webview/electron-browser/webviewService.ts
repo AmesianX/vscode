@@ -3,15 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+import { URI } from 'vs/base/common/uri';
+import { IEnvironmentService } from 'vs/platform/environment/common/environment';
 import { IInstantiationService } from 'vs/platform/instantiation/common/instantiation';
+import { IWebviewService, Webview, WebviewContentOptions, WebviewOptions } from 'vs/workbench/contrib/webview/common/webview';
 import { WebviewElement } from 'vs/workbench/contrib/webview/electron-browser/webviewElement';
-import { IWebviewService, WebviewOptions, WebviewContentOptions, Webview } from 'vs/workbench/contrib/webview/common/webview';
 
 export class WebviewService implements IWebviewService {
 	_serviceBrand: any;
 
 	constructor(
 		@IInstantiationService private readonly _instantiationService: IInstantiationService,
+		@IEnvironmentService private readonly _environmentService: IEnvironmentService,
 	) { }
 
 	createWebview(
@@ -21,5 +24,18 @@ export class WebviewService implements IWebviewService {
 		return this._instantiationService.createInstance(WebviewElement,
 			options,
 			contentOptions);
+	}
+
+	toWebviewResource(resource: URI): URI {
+		const rootUri = URI.parse(this._environmentService.webviewResourceRoot);
+		return rootUri.with({
+			path: rootUri.path + resource.path,
+			query: resource.query,
+			fragment: resource.fragment,
+		});
+	}
+
+	get cspRule(): string {
+		return this._environmentService.webviewResourceRoot;
 	}
 }

@@ -29,6 +29,12 @@ export interface IWebviewService {
 		options: WebviewOptions,
 		contentOptions: WebviewContentOptions,
 	): Webview;
+
+	toWebviewResource(
+		resource: URI,
+	): URI;
+
+	readonly cspRule: string;
 }
 
 export const WebviewResourceScheme = 'vscode-resource';

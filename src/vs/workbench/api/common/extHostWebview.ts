@@ -39,8 +39,12 @@ export class ExtHostWebview implements vscode.Webview {
 		this._onMessageEmitter.dispose();
 	}
 
-	public get resourceRoot(): Promise<string> {
-		return this._proxy.$getResourceRoot(this._handle);
+	public async toWebviewResource(resource: vscode.Uri): Promise<vscode.Uri> {
+		return URI.revive(await this._proxy.$toWebviewResource(this._handle, resource));
+	}
+
+	public get cspRule(): Promise<string> {
+		return this._proxy.$getCspRule(this._handle);
 	}
 
 	public get html(): string {

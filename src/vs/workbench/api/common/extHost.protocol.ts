@@ -520,7 +520,9 @@ export interface MainThreadEditorInsetsShape extends IDisposable {
 	$setHtml(handle: number, value: string): void;
 	$setOptions(handle: number, options: modes.IWebviewOptions): void;
 	$postMessage(handle: number, value: any): Promise<boolean>;
-	$getResourceRoot(handle: number): Promise<string>;
+
+	$toResource(handle: number, resource: UriComponents): Promise<UriComponents>;
+	$getCspRule(handle: number): Promise<string>;
 }
 
 export interface ExtHostEditorInsetsShape {
@@ -545,7 +547,9 @@ export interface MainThreadWebviewsShape extends IDisposable {
 	$setHtml(handle: WebviewPanelHandle, value: string): void;
 	$setOptions(handle: WebviewPanelHandle, options: modes.IWebviewOptions): void;
 	$postMessage(handle: WebviewPanelHandle, value: any): Promise<boolean>;
-	$getResourceRoot(handle: WebviewPanelHandle): Promise<string>;
+
+	$getCspRule(handle: WebviewPanelHandle): Promise<string>;
+	$toWebviewResource(handle: WebviewPanelHandle, resource: UriComponents): Promise<UriComponents>;
 
 	$registerSerializer(viewType: string): void;
 	$unregisterSerializer(viewType: string): void;

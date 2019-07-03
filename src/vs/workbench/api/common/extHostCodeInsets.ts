@@ -4,12 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { Emitter } from 'vs/base/common/event';
-import * as vscode from 'vscode';
-import { MainThreadEditorInsetsShape, ExtHostEditorInsetsShape } from './extHost.protocol';
-import { ExtHostEditors } from 'vs/workbench/api/common/extHostTextEditors';
 import { DisposableStore } from 'vs/base/common/lifecycle';
-import { ExtHostTextEditor } from 'vs/workbench/api/common/extHostTextEditor';
+import { URI } from 'vs/base/common/uri';
 import { IExtensionDescription } from 'vs/platform/extensions/common/extensions';
+import { ExtHostTextEditor } from 'vs/workbench/api/common/extHostTextEditor';
+import { ExtHostEditors } from 'vs/workbench/api/common/extHostTextEditors';
+import * as vscode from 'vscode';
+import { ExtHostEditorInsetsShape, MainThreadEditorInsetsShape } from './extHost.protocol';
 
 export class ExtHostEditorInsets implements ExtHostEditorInsetsShape {
 
@@ -61,8 +62,12 @@ export class ExtHostEditorInsets implements ExtHostEditorInsetsShape {
 			private _html: string = '';
 			private _options: vscode.WebviewOptions;
 
-			get resourceRoot(): Promise<string> {
-				return that._proxy.$getResourceRoot(handle);
+			async toWebviewResource(resource: vscode.Uri): Promise<vscode.Uri> {
+				return URI.revive(await that._proxy.$toResource(handle, resource));
+			}
+
+			public get cspRule(): Promise<string> {
+				return that._proxy.$getCspRule(handle);
 			}
 
 			set options(value: vscode.WebviewOptions) {
